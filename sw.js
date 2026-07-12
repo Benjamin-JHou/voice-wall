@@ -1,4 +1,4 @@
-const CACHE_NAME = "voice-wall-v1";
+const CACHE_NAME = "voice-wall-v2";
 const APP_ASSETS = [
   "./",
   "./index.html",

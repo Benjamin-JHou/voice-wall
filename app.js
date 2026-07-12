@@ -375,7 +375,7 @@ function shareDialogMarkup(note) {
           <option value="30">${tr("days30")}</option>
         </select>
         <button class="primary-button wide" data-action="create-share" data-id="${note.id}">${tr("createQr")}</button>
-        <canvas id="qr-canvas" class="qr-canvas" hidden></canvas>
+        <div id="qr-code" class="qr-canvas" hidden></div>
         <div class="share-link" hidden></div>
       </section>
     </div>
@@ -537,15 +537,31 @@ async function createShare(id) {
     return;
   }
   const shareUrl = `${location.origin}${location.pathname}?share=${data.id}&lang=${state.language}`;
-  const canvas = app.querySelector("#qr-canvas");
+  const qrCode = app.querySelector("#qr-code");
   const link = app.querySelector(".share-link");
-  await window.QRCode.toCanvas(canvas, shareUrl, { width: 220, margin: 1, color: { dark: "#101510", light: "#f4efe5" } });
-  canvas.hidden = false;
+  if (!window.QRCode) {
+    showToast("QR library failed to load.");
+    return;
+  }
+  qrCode.innerHTML = "";
+  new window.QRCode(qrCode, {
+    text: shareUrl,
+    width: 220,
+    height: 220,
+    colorDark: "#101510",
+    colorLight: "#f4efe5",
+    correctLevel: window.QRCode.CorrectLevel.M
+  });
+  qrCode.hidden = false;
   link.hidden = false;
-  link.innerHTML = `<button data-copy="${shareUrl}">${tr("copyLink")}</button><a download="voice-wall-qr.png" href="${canvas.toDataURL("image/png")}">${tr("downloadQr")}</a>`;
-  link.querySelector("button").addEventListener("click", async () => {
-    await navigator.clipboard.writeText(shareUrl);
-    showToast(tr("linkCopied"));
+  requestAnimationFrame(() => {
+    const image = qrCode.querySelector("img") || qrCode.querySelector("canvas");
+    const downloadUrl = image?.tagName === "IMG" ? image.src : image?.toDataURL("image/png");
+    link.innerHTML = `<button data-copy="${shareUrl}">${tr("copyLink")}</button>${downloadUrl ? `<a download="voice-wall-qr.png" href="${downloadUrl}">${tr("downloadQr")}</a>` : ""}`;
+    link.querySelector("button").addEventListener("click", async () => {
+      await navigator.clipboard.writeText(shareUrl);
+      showToast(tr("linkCopied"));
+    });
   });
 }
 
