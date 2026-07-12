@@ -1,0 +1,26 @@
+{
+  "name": "Voice Wall 语音便签墙",
+  "short_name": "Voice Wall",
+  "description": "录制 60 秒以内的语音便签，生成二维码分享给朋友，扫描即听。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4efe5",
+  "theme_color": "#101510",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "录一条便签",
+      "short_name": "录音",
+      "url": "./#record"
+    }
+  ]
+}
