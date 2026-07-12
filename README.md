@@ -8,9 +8,9 @@ Voice Wall is a static PWA for recording voice notes under 60 seconds, pinning t
 
 - Record, preview, re-record, and save voice notes under 60 seconds
 - Local voice wall powered by IndexedDB
-- Six visual note themes: Letter, Ribbon, Record, Ticket, Stamp, and Bloom
+- Six visual note themes with unique patterns: Letter (lined paper), Ribbon (bow), Record (vinyl), Ticket (perforations), Stamp (postage edges), and Bloom (floral)
 - Supabase Storage uploads for shared audio files
-- Sharing periods: no expiry, 7 days, or 30 days
+- Sharing periods: 1 day, 2 days, or 7 days
 - QR code generation, link copy, and QR image download
 - Installable PWA for mobile home screens
 - English, Chinese, and Korean UI, with English as the default language
