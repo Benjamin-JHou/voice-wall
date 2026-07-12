@@ -1,14 +1,204 @@
 const MAX_SECONDS = 60;
 const DB_NAME = "voice-wall-db";
 const STORE_NAME = "notes";
+const LANGUAGE_KEY = "voice-wall-language";
 const THEMES = [
-  { id: "letter", name: "信笺", scene: "日常", accent: "#b53c49" },
-  { id: "ribbon", name: "丝带", scene: "告白", accent: "#8f2f57" },
-  { id: "record", name: "唱片", scene: "朋友", accent: "#262f25" },
-  { id: "ticket", name: "票根", scene: "旅行", accent: "#b77b2e" },
-  { id: "stamp", name: "邮票", scene: "纪念", accent: "#3f695a" },
-  { id: "bloom", name: "花纹", scene: "生日", accent: "#9a4f32" }
+  { id: "letter", accent: "#b53c49" },
+  { id: "ribbon", accent: "#8f2f57" },
+  { id: "record", accent: "#262f25" },
+  { id: "ticket", accent: "#b77b2e" },
+  { id: "stamp", accent: "#3f695a" },
+  { id: "bloom", accent: "#9a4f32" }
 ];
+
+const I18N = {
+  en: {
+    code: "en",
+    htmlLang: "en",
+    locale: "en-US",
+    label: "EN",
+    appName: "Voice Wall",
+    install: "Install",
+    settings: "Setup",
+    heroEyebrow: "Voice cards under 60 seconds",
+    heroTitle: "Turn one sentence into a note your friends can scan and hear.",
+    heroText: "Record, choose a pattern, and generate a QR code. Friends can scan and play it instantly for birthdays, travel notes, farewells, and everyday affection.",
+    themesLabel: "Note patterns",
+    pinboard: "Pinboard",
+    wallTitle: "Local Voice Wall",
+    noteCount: (count) => `${count} voice ${count === 1 ? "note" : "notes"}`,
+    titleLabel: "Note title",
+    titlePlaceholder: "Name this voice note",
+    record: "Record",
+    stop: "Stop",
+    preview: "Preview",
+    pin: "Pin to wall",
+    serviceConnected: "Sharing service connected",
+    serviceMissing: "Recording and local saving work before Supabase is configured",
+    play: "Play",
+    qrCode: "QR code",
+    delete: "Delete",
+    emptyWall: "Your first voice note will appear here.",
+    shareDialogLabel: "Share QR code",
+    close: "Close",
+    expiryLabel: "Sharing period",
+    forever: "No expiry",
+    days7: "7 days",
+    days30: "30 days",
+    createQr: "Create QR code",
+    copyLink: "Copy link",
+    downloadQr: "Download QR",
+    noteDefaultTitle: "Untitled voice",
+    settingsToast: "Configure Supabase variables in GitHub Pages to create public QR codes.",
+    noRecorder: "This browser does not support recording.",
+    micPermission: "Allow microphone access in your browser.",
+    noteSaved: "Voice note pinned to the wall.",
+    noteDeleted: "Voice note deleted.",
+    supabaseMissing: "Configure Supabase URL and anon key first.",
+    linkCopied: "Link copied.",
+    shareNotConfiguredTitle: "Sharing is not configured",
+    shareNotConfiguredText: "Check the Supabase configuration for GitHub Pages.",
+    shareMissingTitle: "This voice note was not found",
+    shareMissingText: "The QR code may point to a deleted share record.",
+    shareExpiredTitle: "This voice note has expired",
+    shareExpiredText: "The sender made this voice note available for a limited time.",
+    sharedBack: "Open Voice Wall",
+    loadingTitle: "Fetching this voice note",
+    backHome: "Back home",
+    themes: {
+      letter: { name: "Letter", scene: "Everyday" },
+      ribbon: { name: "Ribbon", scene: "Love" },
+      record: { name: "Record", scene: "Friends" },
+      ticket: { name: "Ticket", scene: "Travel" },
+      stamp: { name: "Stamp", scene: "Memory" },
+      bloom: { name: "Bloom", scene: "Birthday" }
+    }
+  },
+  zh: {
+    code: "zh",
+    htmlLang: "zh-CN",
+    locale: "zh-CN",
+    label: "中文",
+    appName: "Voice Wall",
+    install: "安装",
+    settings: "配置",
+    heroEyebrow: "60 秒以内的声音卡片",
+    heroTitle: "把一句话，留成能被扫码听见的便签。",
+    heroText: "录音、选图案、生成二维码。朋友扫描后直接播放，适合生日祝福、旅行留言、临别短句和日常心意。",
+    themesLabel: "便签图案",
+    pinboard: "Pinboard",
+    wallTitle: "本机便签墙",
+    noteCount: (count) => `${count} 条声音便签`,
+    titleLabel: "便签标题",
+    titlePlaceholder: "给这条声音起个名字",
+    record: "录音",
+    stop: "停止",
+    preview: "试听",
+    pin: "贴上墙",
+    serviceConnected: "分享服务已连接",
+    serviceMissing: "未配置 Supabase 时可录音和本地保存",
+    play: "播放",
+    qrCode: "二维码",
+    delete: "删除",
+    emptyWall: "第一条声音便签会出现在这里。",
+    shareDialogLabel: "分享二维码",
+    close: "关闭",
+    expiryLabel: "分享有效期",
+    forever: "长期有效",
+    days7: "7 天",
+    days30: "30 天",
+    createQr: "生成二维码",
+    copyLink: "复制链接",
+    downloadQr: "下载二维码",
+    noteDefaultTitle: "未命名声音",
+    settingsToast: "在 GitHub Pages 变量中配置 Supabase 后即可生成公开二维码。",
+    noRecorder: "当前浏览器缺少录音能力。",
+    micPermission: "请允许浏览器使用麦克风。",
+    noteSaved: "便签已贴上墙。",
+    noteDeleted: "便签已删除。",
+    supabaseMissing: "请先配置 Supabase URL 和 anon key。",
+    linkCopied: "链接已复制。",
+    shareNotConfiguredTitle: "分享服务尚未配置",
+    shareNotConfiguredText: "请检查 GitHub Pages 的 Supabase 配置。",
+    shareMissingTitle: "没有找到这条声音",
+    shareMissingText: "二维码可能来自已删除的分享记录。",
+    shareExpiredTitle: "这条声音已经过期",
+    shareExpiredText: "分享人设置了限时可听。",
+    sharedBack: "打开语音便签墙",
+    loadingTitle: "正在取出这条声音",
+    backHome: "返回首页",
+    themes: {
+      letter: { name: "信笺", scene: "日常" },
+      ribbon: { name: "丝带", scene: "告白" },
+      record: { name: "唱片", scene: "朋友" },
+      ticket: { name: "票根", scene: "旅行" },
+      stamp: { name: "邮票", scene: "纪念" },
+      bloom: { name: "花纹", scene: "生日" }
+    }
+  },
+  ko: {
+    code: "ko",
+    htmlLang: "ko",
+    locale: "ko-KR",
+    label: "한국어",
+    appName: "Voice Wall",
+    install: "설치",
+    settings: "설정",
+    heroEyebrow: "60초 안의 보이스 카드",
+    heroTitle: "한 문장을 스캔해서 들을 수 있는 메모로 남기세요.",
+    heroText: "녹음하고 패턴을 고른 뒤 QR 코드를 만드세요. 친구는 스캔만 하면 바로 들을 수 있어 생일, 여행, 작별 인사, 일상 마음을 전하기 좋습니다.",
+    themesLabel: "메모 패턴",
+    pinboard: "Pinboard",
+    wallTitle: "내 기기의 보이스 월",
+    noteCount: (count) => `보이스 메모 ${count}개`,
+    titleLabel: "메모 제목",
+    titlePlaceholder: "이 보이스 메모의 이름",
+    record: "녹음",
+    stop: "정지",
+    preview: "미리 듣기",
+    pin: "벽에 붙이기",
+    serviceConnected: "공유 서비스 연결됨",
+    serviceMissing: "Supabase 설정 전에도 녹음과 로컬 저장을 사용할 수 있습니다",
+    play: "재생",
+    qrCode: "QR 코드",
+    delete: "삭제",
+    emptyWall: "첫 번째 보이스 메모가 여기에 표시됩니다.",
+    shareDialogLabel: "QR 코드 공유",
+    close: "닫기",
+    expiryLabel: "공유 기간",
+    forever: "기한 없음",
+    days7: "7일",
+    days30: "30일",
+    createQr: "QR 코드 만들기",
+    copyLink: "링크 복사",
+    downloadQr: "QR 다운로드",
+    noteDefaultTitle: "제목 없는 보이스",
+    settingsToast: "GitHub Pages 변수에 Supabase를 설정하면 공개 QR 코드를 만들 수 있습니다.",
+    noRecorder: "이 브라우저는 녹음을 지원하지 않습니다.",
+    micPermission: "브라우저에서 마이크 접근을 허용하세요.",
+    noteSaved: "보이스 메모를 벽에 붙였습니다.",
+    noteDeleted: "보이스 메모를 삭제했습니다.",
+    supabaseMissing: "Supabase URL과 anon key를 먼저 설정하세요.",
+    linkCopied: "링크를 복사했습니다.",
+    shareNotConfiguredTitle: "공유 설정이 필요합니다",
+    shareNotConfiguredText: "GitHub Pages의 Supabase 설정을 확인하세요.",
+    shareMissingTitle: "이 보이스 메모를 찾을 수 없습니다",
+    shareMissingText: "QR 코드가 삭제된 공유 기록을 가리킬 수 있습니다.",
+    shareExpiredTitle: "이 보이스 메모는 만료되었습니다",
+    shareExpiredText: "보낸 사람이 제한된 기간만 들을 수 있게 설정했습니다.",
+    sharedBack: "Voice Wall 열기",
+    loadingTitle: "보이스 메모를 가져오는 중",
+    backHome: "홈으로 돌아가기",
+    themes: {
+      letter: { name: "편지", scene: "일상" },
+      ribbon: { name: "리본", scene: "고백" },
+      record: { name: "레코드", scene: "친구" },
+      ticket: { name: "티켓", scene: "여행" },
+      stamp: { name: "우표", scene: "기념" },
+      bloom: { name: "꽃무늬", scene: "생일" }
+    }
+  }
+};
 
 const state = {
   db: null,
@@ -21,7 +211,8 @@ const state = {
   selectedTheme: THEMES[0].id,
   notes: [],
   installPrompt: null,
-  shareDialogNote: null
+  shareDialogNote: null,
+  language: getInitialLanguage()
 };
 
 const app = document.querySelector("#app");
@@ -31,6 +222,7 @@ const supabaseClient = createSupabaseClient();
 init();
 
 async function init() {
+  document.documentElement.lang = currentCopy().htmlLang;
   state.db = await openDb();
   state.notes = await getAllNotes();
   window.addEventListener("hashchange", render);
@@ -51,6 +243,7 @@ function createSupabaseClient() {
 }
 
 function render() {
+  document.documentElement.lang = currentCopy().htmlLang;
   const shareId = new URLSearchParams(location.search).get("share");
   if (shareId) {
     renderSharedNote(shareId);
@@ -58,35 +251,36 @@ function render() {
   }
   app.innerHTML = `
     <header class="topbar">
-      <a class="brand" href="./" aria-label="Voice Wall 首页">
+      <a class="brand" href="./" aria-label="${tr("appName")}">
         <span class="brand-mark"></span>
-        <span>Voice Wall</span>
+        <span>${tr("appName")}</span>
       </a>
       <div class="topbar-actions">
-        <button class="ghost-button" data-action="install" ${state.installPrompt ? "" : "hidden"}>安装</button>
-        <button class="ghost-button" data-action="settings">配置</button>
+        ${languageSwitcherMarkup()}
+        <button class="ghost-button" data-action="install" ${state.installPrompt ? "" : "hidden"}>${tr("install")}</button>
+        <button class="ghost-button" data-action="settings">${tr("settings")}</button>
       </div>
     </header>
     <main>
       <section class="hero" id="record">
         <div class="hero-copy">
-          <p class="eyebrow">60 秒以内的声音卡片</p>
-          <h1>把一句话，留成能被扫码听见的便签。</h1>
-          <p class="hero-text">录音、选图案、生成二维码。朋友扫描后直接播放，适合生日祝福、旅行留言、临别短句和日常心意。</p>
+          <p class="eyebrow">${tr("heroEyebrow")}</p>
+          <h1>${tr("heroTitle")}</h1>
+          <p class="hero-text">${tr("heroText")}</p>
         </div>
         <div class="recorder-panel">
           ${recorderMarkup()}
         </div>
       </section>
-      <section class="theme-strip" aria-label="便签图案">
+      <section class="theme-strip" aria-label="${tr("themesLabel")}">
         ${THEMES.map(themeButtonMarkup).join("")}
       </section>
       <section class="wall-heading">
         <div>
-          <p class="eyebrow">Pinboard</p>
-          <h2>本机便签墙</h2>
+          <p class="eyebrow">${tr("pinboard")}</p>
+          <h2>${tr("wallTitle")}</h2>
         </div>
-        <p>${state.notes.length} 条声音便签</p>
+        <p>${currentCopy().noteCount(state.notes.length)}</p>
       </section>
       <section class="note-wall">
         ${state.notes.length ? state.notes.map(noteMarkup).join("") : emptyWallMarkup()}
@@ -96,6 +290,16 @@ function render() {
     <div class="toast" role="status" aria-live="polite"></div>
   `;
   bindEvents();
+}
+
+function languageSwitcherMarkup() {
+  return `
+    <div class="language-switcher" aria-label="Language">
+      ${Object.values(I18N).map((language) => `
+        <button class="language-button ${language.code === state.language ? "is-active" : ""}" data-action="set-language" data-language="${language.code}" type="button">${language.label}</button>
+      `).join("")}
+    </div>
+  `;
 }
 
 function recorderMarkup() {
@@ -109,39 +313,41 @@ function recorderMarkup() {
         ${Array.from({ length: 24 }, (_, index) => `<i style="--i:${index}"></i>`).join("")}
       </div>
     </div>
-    <label class="field-label" for="note-title">便签标题</label>
-    <input id="note-title" class="title-input" maxlength="30" placeholder="给这条声音起个名字" />
+    <label class="field-label" for="note-title">${tr("titleLabel")}</label>
+    <input id="note-title" class="title-input" maxlength="30" placeholder="${tr("titlePlaceholder")}" />
     <div class="recorder-actions">
-      <button class="primary-button" data-action="record">${state.recorder?.state === "recording" ? "停止" : "录音"}</button>
-      <button class="secondary-button" data-action="play-current" ${ready ? "" : "disabled"}>试听</button>
-      <button class="secondary-button" data-action="save-current" ${ready ? "" : "disabled"}>贴上墙</button>
+      <button class="primary-button" data-action="record">${state.recorder?.state === "recording" ? tr("stop") : tr("record")}</button>
+      <button class="secondary-button" data-action="play-current" ${ready ? "" : "disabled"}>${tr("preview")}</button>
+      <button class="secondary-button" data-action="save-current" ${ready ? "" : "disabled"}>${tr("pin")}</button>
     </div>
-    <p class="panel-note">${supabaseClient ? "分享服务已连接" : "未配置 Supabase 时可录音和本地保存"}</p>
+    <p class="panel-note">${supabaseClient ? tr("serviceConnected") : tr("serviceMissing")}</p>
   `;
 }
 
 function themeButtonMarkup(theme) {
+  const text = getThemeText(theme.id);
   return `
     <button class="theme-chip ${theme.id === state.selectedTheme ? "is-selected" : ""}" data-action="select-theme" data-theme="${theme.id}" style="--accent:${theme.accent}">
       <span></span>
-      <strong>${theme.name}</strong>
-      <em>${theme.scene}</em>
+      <strong>${text.name}</strong>
+      <em>${text.scene}</em>
     </button>
   `;
 }
 
 function noteMarkup(note) {
   const theme = getTheme(note.theme);
+  const text = getThemeText(theme.id);
   return `
     <article class="note-card theme-${theme.id}" style="--accent:${theme.accent}">
       <div class="note-ornament"></div>
-      <p class="note-meta">${theme.scene} · ${formatTime(note.duration)}</p>
+      <p class="note-meta">${text.scene} · ${formatTime(note.duration)}</p>
       <h3>${escapeHtml(note.title)}</h3>
-      <p>${new Date(note.createdAt).toLocaleDateString("zh-CN", { month: "short", day: "numeric" })}</p>
+      <p>${new Date(note.createdAt).toLocaleDateString(currentCopy().locale, { month: "short", day: "numeric" })}</p>
       <div class="note-actions">
-        <button data-action="play-note" data-id="${note.id}">播放</button>
-        <button data-action="share-note" data-id="${note.id}">二维码</button>
-        <button data-action="delete-note" data-id="${note.id}">删除</button>
+        <button data-action="play-note" data-id="${note.id}">${tr("play")}</button>
+        <button data-action="share-note" data-id="${note.id}">${tr("qrCode")}</button>
+        <button data-action="delete-note" data-id="${note.id}">${tr("delete")}</button>
       </div>
     </article>
   `;
@@ -150,7 +356,7 @@ function noteMarkup(note) {
 function emptyWallMarkup() {
   return `
     <div class="empty-wall">
-      <p>第一条声音便签会出现在这里。</p>
+      <p>${tr("emptyWall")}</p>
     </div>
   `;
 }
@@ -158,17 +364,17 @@ function emptyWallMarkup() {
 function shareDialogMarkup(note) {
   return `
     <div class="modal-backdrop" data-action="close-share">
-      <section class="share-modal" role="dialog" aria-modal="true" aria-label="分享二维码">
-        <button class="modal-close" data-action="close-share" aria-label="关闭">×</button>
+      <section class="share-modal" role="dialog" aria-modal="true" aria-label="${tr("shareDialogLabel")}">
+        <button class="modal-close" data-action="close-share" aria-label="${tr("close")}">×</button>
         <p class="eyebrow">Share Card</p>
         <h2>${escapeHtml(note.title)}</h2>
-        <label class="field-label" for="expiry-select">分享有效期</label>
+        <label class="field-label" for="expiry-select">${tr("expiryLabel")}</label>
         <select id="expiry-select" class="title-input">
-          <option value="forever">长期有效</option>
-          <option value="7">7 天</option>
-          <option value="30">30 天</option>
+          <option value="forever">${tr("forever")}</option>
+          <option value="7">${tr("days7")}</option>
+          <option value="30">${tr("days30")}</option>
         </select>
-        <button class="primary-button wide" data-action="create-share" data-id="${note.id}">生成二维码</button>
+        <button class="primary-button wide" data-action="create-share" data-id="${note.id}">${tr("createQr")}</button>
         <canvas id="qr-canvas" class="qr-canvas" hidden></canvas>
         <div class="share-link" hidden></div>
       </section>
@@ -185,6 +391,10 @@ function bindEvents() {
 async function handleAction(event) {
   const action = event.currentTarget.dataset.action;
   const id = event.currentTarget.dataset.id;
+  if (action === "set-language") {
+    setLanguage(event.currentTarget.dataset.language);
+    return;
+  }
   if (action === "record") await toggleRecording();
   if (action === "play-current") playBlob(state.currentBlob);
   if (action === "save-current") await saveCurrentNote();
@@ -204,7 +414,7 @@ async function handleAction(event) {
   }
   if (action === "create-share") await createShare(id);
   if (action === "install") await installApp();
-  if (action === "settings") showToast("在 GitHub Pages 变量中配置 Supabase 后即可生成公开二维码。");
+  if (action === "settings") showToast(tr("settingsToast"));
 }
 
 async function toggleRecording() {
@@ -213,14 +423,14 @@ async function toggleRecording() {
     return;
   }
   if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
-    showToast("当前浏览器缺少录音能力。");
+    showToast(tr("noRecorder"));
     return;
   }
   let stream;
   try {
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   } catch (error) {
-    showToast("请允许浏览器使用麦克风。");
+    showToast(tr("micPermission"));
     return;
   }
   state.chunks = [];
@@ -254,7 +464,7 @@ function pickMimeType() {
 
 async function saveCurrentNote() {
   const titleInput = app.querySelector("#note-title");
-  const title = titleInput.value.trim() || "未命名声音";
+  const title = titleInput.value.trim() || tr("noteDefaultTitle");
   const note = {
     id: crypto.randomUUID(),
     title,
@@ -268,7 +478,7 @@ async function saveCurrentNote() {
   state.currentBlob = null;
   state.currentAudioUrl = "";
   state.seconds = 0;
-  showToast("便签已贴上墙。");
+  showToast(tr("noteSaved"));
   render();
 }
 
@@ -286,13 +496,13 @@ async function playSavedNote(id) {
 async function deleteNote(id) {
   await deleteNoteById(id);
   state.notes = await getAllNotes();
-  showToast("便签已删除。");
+  showToast(tr("noteDeleted"));
   render();
 }
 
 async function createShare(id) {
   if (!supabaseClient) {
-    showToast("请先配置 Supabase URL 和 anon key。");
+    showToast(tr("supabaseMissing"));
     return;
   }
   const note = state.notes.find((item) => item.id === id);
@@ -326,23 +536,23 @@ async function createShare(id) {
     showToast(error.message);
     return;
   }
-  const shareUrl = `${location.origin}${location.pathname}?share=${data.id}`;
+  const shareUrl = `${location.origin}${location.pathname}?share=${data.id}&lang=${state.language}`;
   const canvas = app.querySelector("#qr-canvas");
   const link = app.querySelector(".share-link");
   await window.QRCode.toCanvas(canvas, shareUrl, { width: 220, margin: 1, color: { dark: "#101510", light: "#f4efe5" } });
   canvas.hidden = false;
   link.hidden = false;
-  link.innerHTML = `<button data-copy="${shareUrl}">复制链接</button><a download="voice-wall-qr.png" href="${canvas.toDataURL("image/png")}">下载二维码</a>`;
+  link.innerHTML = `<button data-copy="${shareUrl}">${tr("copyLink")}</button><a download="voice-wall-qr.png" href="${canvas.toDataURL("image/png")}">${tr("downloadQr")}</a>`;
   link.querySelector("button").addEventListener("click", async () => {
     await navigator.clipboard.writeText(shareUrl);
-    showToast("链接已复制。");
+    showToast(tr("linkCopied"));
   });
 }
 
 async function renderSharedNote(id) {
   app.innerHTML = sharedLoadingMarkup();
   if (!supabaseClient) {
-    app.innerHTML = sharedMessageMarkup("分享服务尚未配置", "请检查 GitHub Pages 的 Supabase 配置。");
+    app.innerHTML = sharedMessageMarkup(tr("shareNotConfiguredTitle"), tr("shareNotConfiguredText"));
     return;
   }
   const { data, error } = await supabaseClient
@@ -351,33 +561,34 @@ async function renderSharedNote(id) {
     .eq("id", id)
     .single();
   if (error || !data) {
-    app.innerHTML = sharedMessageMarkup("没有找到这条声音", "二维码可能来自已删除的分享记录。");
+    app.innerHTML = sharedMessageMarkup(tr("shareMissingTitle"), tr("shareMissingText"));
     return;
   }
   if (data.expires_at && new Date(data.expires_at).getTime() < Date.now()) {
-    app.innerHTML = sharedMessageMarkup("这条声音已经过期", "分享人设置了限时可听。");
+    app.innerHTML = sharedMessageMarkup(tr("shareExpiredTitle"), tr("shareExpiredText"));
     return;
   }
   const theme = getTheme(data.theme);
+  const text = getThemeText(theme.id);
   app.innerHTML = `
     <main class="share-page">
       <article class="shared-card theme-${theme.id}" style="--accent:${theme.accent}">
         <p class="eyebrow">Voice Note</p>
         <h1>${escapeHtml(data.title)}</h1>
-        <p>${theme.scene} · ${formatTime(data.duration)}</p>
+        <p>${text.scene} · ${formatTime(data.duration)}</p>
         <audio controls src="${data.audio_url}"></audio>
-        <a class="secondary-button" href="./">打开语音便签墙</a>
+        <a class="secondary-button" href="./">${tr("sharedBack")}</a>
       </article>
     </main>
   `;
 }
 
 function sharedLoadingMarkup() {
-  return `<main class="share-page"><section class="shared-card"><p class="eyebrow">Loading</p><h1>正在取出这条声音</h1></section></main>`;
+  return `<main class="share-page"><section class="shared-card"><p class="eyebrow">Loading</p><h1>${tr("loadingTitle")}</h1></section></main>`;
 }
 
 function sharedMessageMarkup(title, message) {
-  return `<main class="share-page"><section class="shared-card"><p class="eyebrow">Voice Wall</p><h1>${title}</h1><p>${message}</p><a class="secondary-button" href="./">返回首页</a></section></main>`;
+  return `<main class="share-page"><section class="shared-card"><p class="eyebrow">Voice Wall</p><h1>${title}</h1><p>${message}</p><a class="secondary-button" href="./">${tr("backHome")}</a></section></main>`;
 }
 
 function openDb() {
@@ -414,6 +625,32 @@ async function getAllNotes() {
 
 function getTheme(id) {
   return THEMES.find((theme) => theme.id === id) || THEMES[0];
+}
+
+function getThemeText(id) {
+  return currentCopy().themes[id] || I18N.en.themes[id] || I18N.en.themes.letter;
+}
+
+function getInitialLanguage() {
+  const requested = new URLSearchParams(location.search).get("lang");
+  if (I18N[requested]) return requested;
+  const saved = localStorage.getItem(LANGUAGE_KEY);
+  return I18N[saved] ? saved : "en";
+}
+
+function setLanguage(language) {
+  if (!I18N[language]) return;
+  state.language = language;
+  localStorage.setItem(LANGUAGE_KEY, language);
+  render();
+}
+
+function currentCopy() {
+  return I18N[state.language] || I18N.en;
+}
+
+function tr(key) {
+  return currentCopy()[key] || I18N.en[key] || key;
 }
 
 function formatTime(seconds) {

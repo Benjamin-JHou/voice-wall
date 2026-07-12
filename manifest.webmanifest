@@ -1,7 +1,7 @@
 {
-  "name": "Voice Wall 语音便签墙",
+  "name": "Voice Wall",
   "short_name": "Voice Wall",
-  "description": "录制 60 秒以内的语音便签，生成二维码分享给朋友，扫描即听。",
+  "description": "Record voice notes under 60 seconds and share them with QR codes that play instantly when scanned.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -18,8 +18,8 @@
   ],
   "shortcuts": [
     {
-      "name": "录一条便签",
-      "short_name": "录音",
+      "name": "Record a voice note",
+      "short_name": "Record",
       "url": "./#record"
     }
   ]

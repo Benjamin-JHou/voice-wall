@@ -27,7 +27,7 @@ jobs:
             "$SUPABASE_URL" \
             "$SUPABASE_ANON_KEY" \
             "${SUPABASE_BUCKET:-voice-notes}" \
-            "${SUPABASE_TABLE:-shared-notes}" > config.js
+            "${SUPABASE_TABLE:-shared_notes}" > config.js
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}

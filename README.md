@@ -1,72 +1,78 @@
-# Voice Wall 语音便签墙
+# Voice Wall
 
-一个可部署到 GitHub Pages 的静态 PWA。用户通过浏览器录制 60 秒以内的语音便签，保存到本机便签墙，并可上传到 Supabase Storage 生成二维码，扫码后直接播放。
+[中文](README.zh-CN.md) | [한국어](README.ko-KR.md)
 
-## 功能
+Voice Wall is a static PWA for recording voice notes under 60 seconds, pinning them to a local wall, and sharing them through QR codes. Friends can scan a QR code and play the voice note instantly in the browser.
 
-- 60 秒录音、试听、重录和本地保存
-- IndexedDB 本机便签墙
-- 多种图案主题：信笺、丝带、唱片、票根、邮票、花纹
-- Supabase Storage 上传音频
-- 分享有效期：长期有效、7 天、30 天
-- 二维码分享、复制链接、下载二维码图片
-- PWA 安装到手机桌面
+## Features
 
-## Supabase 配置
+- Record, preview, re-record, and save voice notes under 60 seconds
+- Local voice wall powered by IndexedDB
+- Six visual note themes: Letter, Ribbon, Record, Ticket, Stamp, and Bloom
+- Supabase Storage uploads for shared audio files
+- Sharing periods: no expiry, 7 days, or 30 days
+- QR code generation, link copy, and QR image download
+- Installable PWA for mobile home screens
+- English, Chinese, and Korean UI, with English as the default language
 
-### 1. 创建数据库表
+## Supabase Setup
 
-在 Supabase 项目 SQL Editor 中执行 `supabase.sql`。
+### 1. Create the database table and storage bucket
 
-该脚本会创建：
-- `shared_notes` 表（分享记录）
-- `voice-notes` Storage bucket（音频文件）
-- 对应的 RLS 策略
+Run `supabase.sql` in your Supabase project.
 
-### 2. 配置本地开发
+The script creates:
 
-`config.js` 已写入当前 Supabase 项目凭据，本地预览即可使用。
+- `shared_notes` table for share records
+- `voice-notes` Storage bucket for audio files
+- RLS policies for public share playback and anonymous uploads
 
-### 3. 配置 GitHub Pages 部署
+### 2. Local development config
 
-在 GitHub 仓库 Settings 中添加以下配置：
+`config.js` contains the runtime Supabase configuration for local preview.
 
-| 类型 | 名称 | 值 |
-|------|------|-----|
+### 3. GitHub Pages deployment config
+
+Add the following settings in `Settings > Secrets and variables > Actions`:
+
+| Type | Name | Value |
+|------|------|-------|
 | Variable | `SUPABASE_URL` | `https://rpszhuzixljcwvitbqdv.supabase.co` |
-| Secret | `SUPABASE_ANON_KEY` | Supabase 项目的 publishable key |
+| Secret | `SUPABASE_ANON_KEY` | Supabase publishable key |
 | Variable | `SUPABASE_BUCKET` | `voice-notes` |
 | Variable | `SUPABASE_TABLE` | `shared_notes` |
 
-推送 `main` 分支后，GitHub Actions 会自动生成运行时 `config.js` 并部署。
+The GitHub Actions workflow generates `config.js` during deployment.
 
-## 技术说明
+## GitHub Pages Deployment
 
-本项目是纯静态 PWA，通过 CDN 加载 `@supabase/supabase-js`。不需要 Next.js SSR、Server Components 或中间件。所有 Supabase 调用在浏览器端完成，使用 publishable key 即可。
+Enable Pages in the repository:
 
-## GitHub Pages 部署
+1. Open `Settings > Pages`
+2. Set Source to `GitHub Actions`
+3. Push to the `master` branch
 
-仓库 Settings 中启用 Pages：
+The live app is available at:
 
-1. 打开 `Settings > Pages`
-2. Source 选择 `GitHub Actions`
-3. 推送 `main` 分支
+```text
+https://benjamin-jhou.github.io/voice-wall/
+```
 
-## 本地预览
+## Local Preview
 
 ```bash
 python3 -m http.server 4173
 ```
 
-浏览器访问 `http://localhost:4173`。
+Open `http://localhost:4173` in your browser.
 
-## 文件结构
+## Project Structure
 
-- `index.html`：应用入口
-- `app.js`：录音、便签墙、分享和播放逻辑
-- `styles.css`：界面视觉和响应式样式
-- `config.js`：运行时的 Supabase 凭据
-- `manifest.webmanifest`：PWA 配置
-- `sw.js`：离线缓存 Service Worker
-- `supabase.sql`：表、存储桶和 RLS 策略
-- `.github/workflows/pages.yml`：GitHub Pages 部署流程
+- `index.html`: static app entry
+- `app.js`: recording, local wall, sharing, QR, playback, and i18n logic
+- `styles.css`: responsive visual design and note themes
+- `config.js`: runtime Supabase config
+- `manifest.webmanifest`: PWA manifest
+- `sw.js`: offline cache service worker
+- `supabase.sql`: table, bucket, and RLS setup
+- `.github/workflows/pages.yml`: GitHub Pages deployment workflow

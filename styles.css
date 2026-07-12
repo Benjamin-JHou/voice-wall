@@ -93,6 +93,31 @@ button {
   flex-wrap: wrap;
 }
 
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  background: rgba(16, 21, 16, 0.08);
+  border: 1px solid rgba(16, 21, 16, 0.14);
+  border-radius: var(--radius);
+}
+
+.language-button {
+  min-height: 34px;
+  padding: 7px 10px;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.language-button.is-active {
+  color: var(--paper);
+  background: var(--ink);
+}
+
 main {
   width: min(1160px, calc(100% - 32px));
   margin: 0 auto;
@@ -575,6 +600,7 @@ a:hover {
 
   .topbar {
     padding: 12px;
+    align-items: flex-start;
   }
 
   .brand span:last-child {
@@ -582,6 +608,20 @@ a:hover {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .topbar-actions {
+    justify-content: flex-end;
+  }
+
+  .language-switcher {
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .language-button {
+    flex: 1;
   }
 
   h1 {
