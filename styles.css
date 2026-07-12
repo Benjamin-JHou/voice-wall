@@ -156,8 +156,8 @@ h3 {
 
 h1 {
   max-width: 760px;
-  font-size: clamp(3.2rem, 9vw, 7.6rem);
-  line-height: 0.9;
+  font-size: clamp(2rem, 5.6vw, 4.8rem);
+  line-height: 0.92;
 }
 
 h2 {
@@ -361,6 +361,43 @@ a:hover {
   height: 22px;
   background: var(--accent);
   border-radius: 18px 18px 2px 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-letter .theme-chip span,
+.theme-chip[data-theme="letter"] span {
+  background: repeating-linear-gradient(180deg, var(--accent) 0 3px, color-mix(in srgb, var(--accent), #f4efe5 60%) 3px 5px);
+}
+
+.theme-ribbon .theme-chip span,
+.theme-chip[data-theme="ribbon"] span {
+  background: linear-gradient(180deg, var(--accent) 0 45%, color-mix(in srgb, var(--accent), #f4efe5 50%) 45% 55%, var(--accent) 55% 100%);
+}
+
+.theme-record .theme-chip span,
+.theme-chip[data-theme="record"] span {
+  background: radial-gradient(circle, #f4efe5 0 3px, var(--ink) 4px 7px, var(--accent) 8px);
+}
+
+.theme-ticket .theme-chip span,
+.theme-chip[data-theme="ticket"] span {
+  background: linear-gradient(90deg, var(--accent) 0 20%, color-mix(in srgb, var(--accent), #f4efe5 40%) 20% 80%, var(--accent) 80% 100%);
+}
+
+.theme-stamp .theme-chip span,
+.theme-chip[data-theme="stamp"] span {
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--accent), #f4efe5 70%) 0 2px, transparent 3px) 0 0 / 7px 7px,
+    var(--accent);
+}
+
+.theme-bloom .theme-chip span,
+.theme-chip[data-theme="bloom"] span {
+  background:
+    radial-gradient(circle at 30% 40%, #f0c86b 0 5px, transparent 6px),
+    radial-gradient(circle at 65% 60%, color-mix(in srgb, var(--accent), #f4efe5 50%) 0 4px, transparent 5px),
+    var(--accent);
 }
 
 .theme-chip strong {
@@ -419,38 +456,124 @@ a:hover {
 }
 
 .note-ornament {
+  position: relative;
   width: 100%;
   height: 92px;
   margin-bottom: 18px;
-  background:
-    radial-gradient(circle at 26% 50%, var(--accent) 0 16px, transparent 17px),
-    linear-gradient(135deg, transparent 34%, rgba(16, 21, 16, 0.14) 35% 36%, transparent 37%),
-    linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent), #f4efe5 42%));
+  overflow: hidden;
   border-radius: 6px;
 }
 
+.theme-letter .note-ornament {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent), #f4efe5 70%), color-mix(in srgb, var(--accent), #f4efe5 90%));
+  background-image:
+    repeating-linear-gradient(transparent 0 17px, color-mix(in srgb, var(--accent), #f4efe5 50%) 17px 18px),
+    linear-gradient(90deg, transparent 0 24px, color-mix(in srgb, var(--accent), #000 20%) 24px 26px, transparent 26px);
+  background-color: color-mix(in srgb, var(--accent), #f4efe5 75%);
+}
+
+.theme-letter .note-ornament::after {
+  content: "✉";
+  position: absolute;
+  right: 14px;
+  bottom: 4px;
+  font-size: 2.2rem;
+  color: color-mix(in srgb, var(--accent), #000 25%);
+  opacity: 0.7;
+}
+
+.theme-ribbon .note-ornament {
+  background:
+    conic-gradient(from 90deg at 50% 0%, transparent 0deg, var(--accent) 30deg 150deg, transparent 180deg) 0 0 / 50% 100% no-repeat,
+    conic-gradient(from 270deg at 50% 0%, transparent 0deg, var(--accent) 30deg 150deg, transparent 180deg) 100% 0 / 50% 100% no-repeat,
+    linear-gradient(180deg, var(--accent) 0 34%, color-mix(in srgb, var(--accent), #f4efe5 50%) 34% 38%, var(--accent) 38% 100%);
+}
+
+.theme-ribbon .note-ornament::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 34%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 18px solid color-mix(in srgb, var(--accent), #f4efe5 80%);
+}
+
 .theme-record .note-ornament {
-  background: radial-gradient(circle, #f4efe5 0 11px, var(--ink) 12px 42px, #2d342c 43px 68px, var(--accent) 69px);
+  background:
+    radial-gradient(circle at 50% 50%, #f4efe5 0 5px, var(--ink) 6px 10px, #f0c86b 11px 14px, #2d342c 15px 32px, #4a5246 33px 50px, var(--accent) 51px);
+  background-color: var(--accent);
+}
+
+.theme-record .note-ornament::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-radial-gradient(circle at 50% 50%, transparent 0 3px, rgba(244, 239, 229, 0.1) 3px 4px);
 }
 
 .theme-ticket .note-ornament {
   background:
-    radial-gradient(circle at left center, #f4efe5 0 14px, transparent 15px),
-    radial-gradient(circle at right center, #f4efe5 0 14px, transparent 15px),
-    repeating-linear-gradient(90deg, var(--accent) 0 18px, #e5c88b 19px 36px);
+    radial-gradient(circle at left center, color-mix(in srgb, var(--accent), #f4efe5 80%) 0 12px, transparent 13px) 0 0 / 24px 100%,
+    linear-gradient(90deg, var(--accent) 0 18%, color-mix(in srgb, var(--accent), #f4efe5 30%) 18% 82%, var(--accent) 82% 100%);
+}
+
+.theme-ticket .note-ornament::after {
+  content: "ADMIT ONE";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: Georgia, serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: color-mix(in srgb, var(--accent), #000 35%);
+  opacity: 0.6;
 }
 
 .theme-stamp .note-ornament {
   background:
-    radial-gradient(circle, #f4efe5 0 4px, transparent 5px) 0 0 / 16px 16px,
-    linear-gradient(135deg, var(--accent), #b7c7ad);
+    radial-gradient(circle, color-mix(in srgb, var(--accent), #f4efe5 80%) 0 3px, transparent 4px) 0 0 / 14px 14px,
+    linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent), #f4efe5 55%));
+  background-color: var(--accent);
+}
+
+.theme-stamp .note-ornament::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border: 2px dashed color-mix(in srgb, var(--accent), #000 30%);
+  border-radius: 4px;
+  opacity: 0.5;
 }
 
 .theme-bloom .note-ornament {
   background:
-    radial-gradient(circle at 25% 35%, #f0c86b 0 16px, transparent 17px),
-    radial-gradient(circle at 56% 55%, rgba(244, 239, 229, 0.8) 0 20px, transparent 21px),
-    var(--accent);
+    radial-gradient(circle at 30% 40%, #f0c86b 0 12px, transparent 13px),
+    radial-gradient(circle at 65% 30%, color-mix(in srgb, var(--accent), #f4efe5 60%) 0 10px, transparent 11px),
+    radial-gradient(circle at 55% 65%, #f4efe5 0 14px, transparent 15px),
+    radial-gradient(circle at 80% 70%, #f0c86b 0 8px, transparent 9px),
+    linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent), #3f695a 40%));
+  background-color: var(--accent);
+}
+
+.theme-bloom .note-ornament::after {
+  content: "✿";
+  position: absolute;
+  left: 22%;
+  top: 55%;
+  font-size: 1.8rem;
+  color: color-mix(in srgb, var(--accent), #000 20%);
+  opacity: 0.5;
 }
 
 .note-meta,
@@ -575,13 +698,54 @@ a:hover {
   width: 100%;
   height: 150px;
   margin-bottom: 24px;
-  background:
-    linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent), #f4efe5 48%));
   border-radius: 6px;
+  background:
+    linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent), #f4efe5 50%));
+  position: relative;
+  overflow: hidden;
+}
+
+.shared-card.theme-letter::before {
+  background:
+    repeating-linear-gradient(180deg, transparent 0 15px, color-mix(in srgb, var(--accent), #f4efe5 60%) 15px 16px),
+    linear-gradient(90deg, transparent 0 30px, color-mix(in srgb, var(--accent), #000 15%) 30px 32px, transparent 32px),
+    color-mix(in srgb, var(--accent), #f4efe5 70%);
+}
+
+.shared-card.theme-ribbon::before {
+  background:
+    linear-gradient(180deg, var(--accent) 0 35%, color-mix(in srgb, var(--accent), #f4efe5 50%) 35% 40%, var(--accent) 40% 100%);
+}
+
+.shared-card.theme-record::before {
+  background:
+    radial-gradient(circle at 50% 50%, #f4efe5 0 8px, var(--ink) 9px 14px, #f0c86b 15px 18px, #2d342c 19px 40px, #4a5246 41px 60px, var(--accent) 61px),
+    var(--accent);
+}
+
+.shared-card.theme-ticket::before {
+  background:
+    radial-gradient(circle at left center, color-mix(in srgb, var(--accent), #f4efe5 80%) 0 14px, transparent 15px) 0 0 / 28px 100%,
+    linear-gradient(90deg, var(--accent) 0 18%, color-mix(in srgb, var(--accent), #f4efe5 30%) 18% 82%, var(--accent) 82% 100%);
+}
+
+.shared-card.theme-stamp::before {
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--accent), #f4efe5 80%) 0 4px, transparent 5px) 0 0 / 16px 16px,
+    linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent), #f4efe5 55%));
+}
+
+.shared-card.theme-bloom::before {
+  background:
+    radial-gradient(circle at 30% 40%, #f0c86b 0 18px, transparent 19px),
+    radial-gradient(circle at 65% 30%, color-mix(in srgb, var(--accent), #f4efe5 60%) 0 14px, transparent 15px),
+    radial-gradient(circle at 55% 65%, #f4efe5 0 20px, transparent 21px),
+    radial-gradient(circle at 80% 70%, #f0c86b 0 12px, transparent 13px),
+    linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent), #3f695a 40%));
 }
 
 .shared-card h1 {
-  font-size: clamp(2.4rem, 12vw, 5.5rem);
+  font-size: clamp(1.5rem, 7.5vw, 3.4rem);
 }
 
 .shared-card audio {
@@ -633,7 +797,7 @@ a:hover {
   }
 
   h1 {
-    font-size: clamp(3rem, 16vw, 4.5rem);
+    font-size: clamp(1.9rem, 10vw, 2.8rem);
   }
 
   .hero-text {
