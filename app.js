@@ -42,9 +42,9 @@ const I18N = {
     shareDialogLabel: "Share QR code",
     close: "Close",
     expiryLabel: "Sharing period",
-    forever: "No expiry",
+    days1: "1 day",
+    days2: "2 days",
     days7: "7 days",
-    days30: "30 days",
     createQr: "Create QR code",
     copyLink: "Copy link",
     downloadQr: "Download QR",
@@ -104,9 +104,9 @@ const I18N = {
     shareDialogLabel: "分享二维码",
     close: "关闭",
     expiryLabel: "分享有效期",
-    forever: "长期有效",
+    days1: "1 天",
+    days2: "2 天",
     days7: "7 天",
-    days30: "30 天",
     createQr: "生成二维码",
     copyLink: "复制链接",
     downloadQr: "下载二维码",
@@ -166,9 +166,9 @@ const I18N = {
     shareDialogLabel: "QR 코드 공유",
     close: "닫기",
     expiryLabel: "공유 기간",
-    forever: "기한 없음",
+    days1: "1일",
+    days2: "2일",
     days7: "7일",
-    days30: "30일",
     createQr: "QR 코드 만들기",
     copyLink: "링크 복사",
     downloadQr: "QR 다운로드",
@@ -370,9 +370,9 @@ function shareDialogMarkup(note) {
         <h2>${escapeHtml(note.title)}</h2>
         <label class="field-label" for="expiry-select">${tr("expiryLabel")}</label>
         <select id="expiry-select" class="title-input">
-          <option value="forever">${tr("forever")}</option>
-          <option value="7">${tr("days7")}</option>
-          <option value="30">${tr("days30")}</option>
+          <option value="1">${tr("days1")}</option>
+          <option value="2">${tr("days2")}</option>
+          <option value="7" selected>${tr("days7")}</option>
         </select>
         <button class="primary-button wide" data-action="create-share" data-id="${note.id}">${tr("createQr")}</button>
         <div id="qr-code" class="qr-canvas" hidden></div>
@@ -507,7 +507,7 @@ async function createShare(id) {
   }
   const note = state.notes.find((item) => item.id === id);
   const expiry = app.querySelector("#expiry-select").value;
-  const expiresAt = expiry === "forever" ? null : new Date(Date.now() + Number(expiry) * 86400000).toISOString();
+  const expiresAt = new Date(Date.now() + Number(expiry) * 86400000).toISOString();
   const fileExt = note.audioBlob.type.includes("mp4") ? "m4a" : "webm";
   const filePath = `${note.id}-${Date.now()}.${fileExt}`;
   const { error: uploadError } = await supabaseClient.storage
