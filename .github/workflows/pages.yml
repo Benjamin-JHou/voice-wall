@@ -26,19 +26,16 @@ jobs:
 
       - name: Generate runtime config
         run: |
-          cat > config.js <<CONFIG
-          window.VOICE_WALL_CONFIG = {
-            SUPABASE_URL: "$SUPABASE_URL",
-            SUPABASE_ANON_KEY: "$SUPABASE_ANON_KEY",
-            SUPABASE_BUCKET: "${SUPABASE_BUCKET:-voice-notes}",
-            SUPABASE_TABLE: "${SUPABASE_TABLE:-shared_notes}"
-          };
-          CONFIG
+          printf 'window.VOICE_WALL_CONFIG = {\n  SUPABASE_URL: "%s",\n  SUPABASE_ANON_KEY: "%s",\n  SUPABASE_BUCKET: "%s",\n  SUPABASE_TABLE: "%s"\n};\n' \
+            "$SUPABASE_URL" \
+            "$SUPABASE_ANON_KEY" \
+            "${SUPABASE_BUCKET:-voice-notes}" \
+            "${SUPABASE_TABLE:-shared-notes}" > config.js
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          SUPABASE_BUCKET: ${{ vars.SUPABASE_BUCKET || 'voice-notes' }}
-          SUPABASE_TABLE: ${{ vars.SUPABASE_TABLE || 'shared_notes' }}
+          SUPABASE_BUCKET: ${{ vars.SUPABASE_BUCKET }}
+          SUPABASE_TABLE: ${{ vars.SUPABASE_TABLE }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
